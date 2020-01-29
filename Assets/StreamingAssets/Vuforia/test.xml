@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="carteNavigo" size="0.100000 0.062654" />
+    <ImageTarget name="carte_visite" size="0.100000 0.064741" />
+    <ImageTarget name="carte_etudiant" size="0.100000 0.063405" />
+  </Tracking>
+</QCARConfig>

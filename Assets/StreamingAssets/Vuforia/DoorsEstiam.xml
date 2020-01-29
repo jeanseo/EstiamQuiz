@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="SalleU" size="1.000000 1.778052" />
+    <ImageTarget name="SalleT" size="1.000000 2.326786" />
+    <ImageTarget name="SalleS" size="1.000000 2.286219" />
+    <ImageTarget name="SalleR" size="1.000000 2.272993" />
+    <ImageTarget name="SalleQ2" size="1.000000 2.115318" />
+    <ImageTarget name="SalleQ" size="1.000000 2.165835" />
+    <ImageTarget name="SalleP" size="1.000000 2.361223" />
+    <ImageTarget name="SalleO" size="1.000000 2.386495" />
+    <ImageTarget name="SalleN" size="1.000000 2.355583" />
+    <ImageTarget name="SalleM" size="1.000000 2.141956" />
+    <ImageTarget name="SalleL" size="1.000000 2.482572" />
+    <ImageTarget name="SalleK" size="1.000000 2.171220" />
+    <ImageTarget name="SalleJ" size="1.000000 2.220937" />
+    <ImageTarget name="SalleG" size="1.000000 2.259898" />
+    <ImageTarget name="SalleF" size="1.000000 2.329114" />
+    <ImageTarget name="SalleE" size="1.000000 2.335821" />
+    <ImageTarget name="SalleD" size="1.000000 2.346029" />
+    <ImageTarget name="SalleC" size="1.000000 2.130377" />
+    <ImageTarget name="SalleB" size="1.000000 2.199662" />
+    <ImageTarget name="SalleA" size="1.000000 2.210048" />
+    <ImageTarget name="SalleI" size="1.000000 2.056447" />
+    <ImageTarget name="SalleH" size="1.000000 2.046599" />
+    <ImageTarget name="SalleV" size="1.000000 2.198276" />
+  </Tracking>
+</QCARConfig>
