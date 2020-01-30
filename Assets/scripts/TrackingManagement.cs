@@ -5,12 +5,15 @@ using UnityEngine;
 using Vuforia;
 using UnityEngine.UI;
 using System.Threading.Tasks;
+using Assets.scripts.classes;
 
 public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
 {
     private TrackableBehaviour trackableBehaviour;
     public bool correctAnswer;
     public GameObject cube;
+    public String doorId;
+    private Color answerColor;
 
     public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus)
     {
@@ -29,45 +32,66 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
         if (trackableBehaviour)
             trackableBehaviour.RegisterTrackableEventHandler(this);
 
-        displayAnswer();
-
     }
 
     private void onTrackingLost()
     {
-        //if (transform.childCount > 0)
-        //    SetChildrenActive(true);
+        Debug.Log("TRACKING PERDU");
+        ResetDoor();
     }
 
     private void OnTrackingFound()
     {
-        //if (transform.childCount > 0)
-        //    SetChildrenActive(false);
-        //displayAnswer();
-        if (correctAnswer)
+        Debug.Log("TRACKING TROUVE");
+        if (IsCorrectAnswer())
         {
-
+            Globals.currentLevel++;
+            displayAnswer(true);
+        }
+        else
+        {
+            displayAnswer(false);
         }
     }
-    private void SetChildrenActive(bool activeState)
-    {
-        //for (int i = 0; i <= transform.childCount; i++)
-        //    transform.GetChild(i++).gameObject.SetActive(activeState);
-        
-    }
 
-    private void displayAnswer()
+    private void displayAnswer(bool correct)
     {
-        StartCoroutine("WaitOneSecond");
+        if (correct)
+        {
+            answerColor = Color.green;
+            StartCoroutine("WaitOneSecond");
+        }
+        else
+        {
+            answerColor = Color.red;
+            StartCoroutine("WaitOneSecond");
+        }
+            
+        
 
     }
 
     private IEnumerator WaitOneSecond()
     {
-        yield return new WaitForSeconds(3);
-        var cubeRenderer = cube.GetComponent<Renderer>();
-        if (correctAnswer)
-            cubeRenderer.material.SetColor("_Color", Color.green);
+        yield return new WaitForSeconds(1);
+        cube.GetComponent<Renderer>().material.SetColor("_Color", answerColor);
+    }
+
+    private bool IsCorrectAnswer()
+    {
+        Debug.Log("REPONSE CORRECTE???");
+        Debug.Log(Globals.currentLevel);
+        Debug.Log(doorId);
+        if (Globals.currentLevel == 0 && doorId == "A")
+            return true;
+        else if (Globals.currentLevel == 1 && doorId == "B")
+            return true;
+        return false;
+    }
+
+    private void ResetDoor()
+    {
+        cube.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
     }
 
 }
