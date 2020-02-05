@@ -13,14 +13,14 @@ public class UIManagement : MonoBehaviour
     {
         Debug.Log("C'eST PARTI!!!!!");
         instruction = GameObject.Find("Instructions");
-        ChangeInstructions("Veuillez vous rendre au panneau d'entrée");
+        
         
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        ChangeInstructions(Globals.instruction);
     }
 
     public void ChangeInstructions(string text)

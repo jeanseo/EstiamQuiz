@@ -11,5 +11,6 @@ namespace Assets.scripts.classes
         public static int currentLevel = 0;
         public static string correctAnswer = "Entrée";
         public static string lastDoor = "Entrée";
+        public static string instruction = "Trouve le panneau Estiam pour commencer";
     }
 }

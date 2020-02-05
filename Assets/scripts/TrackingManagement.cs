@@ -6,6 +6,7 @@ using Vuforia;
 using UnityEngine.UI;
 using System.Threading.Tasks;
 using Assets.scripts.classes;
+using Assets.scripts;
 
 public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
 {
@@ -15,7 +16,9 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
     public GameObject indiceCanvas;
     public GameObject resultCanvas;
     public String doorId;
+    public GameObject ui;
     protected Color answerColor;
+    protected bool inFirst = false;
 
     public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus)
     {
@@ -28,7 +31,7 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
     }
 
     // Start is called before the first frame update
-    void Start()
+    async void Start()
     {
         //Initialisation des textes
         cube = GameObject.Find("Cube");
@@ -49,18 +52,21 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
     private void onTrackingLost()
     {
         Debug.Log("TRACKING PERDU");
+        Globals.instruction = "Trouve la porte qui correspond à la réponse";
     }
 
     private async void OnTrackingFound()
     {
+        Globals.instruction = "";
         Debug.Log("TRACKING TROUVE");
         if (IsCorrectAnswer())
         {
             Debug.Log("REPONSE CORRECTE");
             if(Globals.correctAnswer != "Entrée")
             {
-                displayAnswer(true);
+                await displayAnswer(true);
             }
+            
             Debug.Log(Globals.correctAnswer);
             Question nextQuestion = new Question();
             await nextQuestion.GetQuestion(Globals.correctAnswer);
@@ -78,7 +84,7 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
         }
     }
 
-    private void displayAnswer(bool correct)
+    private async Task displayAnswer(bool correct)
     {
         if (correct)
         {
@@ -94,19 +100,25 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
             resultCanvas.GetComponent<Text>().color = answerColor;
             StartCoroutine("WaitOneSecond");
         }
-            
-        
-
     }
 
-    private IEnumerator WaitOneSecond()
+    private IEnumerator DisplayResult()
     {
+        inFirst = true;
         Debug.Log("REPONSE");
         yield return new WaitForSeconds(1);
         resultCanvas.SetActive(true);
         yield return new WaitForSeconds(3);
         resultCanvas.SetActive(false);
-        //cube.GetComponent<Renderer>().material.SetColor("_Color", answerColor);
+        inFirst = false;
+    }
+
+    private IEnumerator DisplayQuestion()
+    {
+        while (inFirst)
+            yield return new WaitForSeconds(0.1f);
+
+
     }
 
     private bool IsCorrectAnswer()
