@@ -10,11 +10,10 @@ using Assets.scripts.classes;
 public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
 {
     private TrackableBehaviour trackableBehaviour;
-    public bool correctAnswer;
-    protected GameObject cube;
-    protected GameObject questionCanvas;
-    protected GameObject indiceCanvas;
-    protected GameObject resultCanvas;
+    public GameObject cube;
+    public GameObject questionCanvas;
+    public GameObject indiceCanvas;
+    public GameObject resultCanvas;
     public String doorId;
     protected Color answerColor;
 
@@ -31,13 +30,16 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
     // Start is called before the first frame update
     void Start()
     {
+        //Initialisation des textes
         cube = GameObject.Find("Cube");
-        questionCanvas = GameObject.Find("Question");
-        indiceCanvas = GameObject.Find("Indice");
-        resultCanvas = GameObject.Find("Result");
-        questionCanvas.SetActive(false);
-        indiceCanvas.SetActive(false);
-        resultCanvas.SetActive(false);
+        //questionCanvas = GameObject.Find("Question");
+        //indiceCanvas = GameObject.Find("Indice");
+        //resultCanvas = GameObject.Find("Result");
+        
+        resultCanvas.GetComponent<Text>().text = "";
+        indiceCanvas.GetComponent<Text>().text = "";
+        questionCanvas.GetComponent<Text>().text = "";
+
         trackableBehaviour = GetComponent<TrackableBehaviour>();
         if (trackableBehaviour)
             trackableBehaviour.RegisterTrackableEventHandler(this);
@@ -54,7 +56,7 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
         Debug.Log("TRACKING TROUVE");
         if (IsCorrectAnswer())
         {
-            Globals.currentLevel++;
+            Debug.Log("REPONSE CORRECTE");
             if(Globals.correctAnswer != "Entrée")
             {
                 displayAnswer(true);
@@ -62,12 +64,15 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
             Debug.Log(Globals.correctAnswer);
             Question nextQuestion = new Question();
             await nextQuestion.GetQuestion(Globals.correctAnswer);
+            Debug.Log("Question récupérée:");
+            Debug.Log(nextQuestion.question);
             DisplayQuestion(nextQuestion);
             Globals.lastDoor = doorId;
             Globals.correctAnswer = nextQuestion.answer;
         }
         else
         {
+            Debug.Log("REPONSE FAUSSE");
             if (Globals.lastDoor != doorId)
                 displayAnswer(false);
         }
@@ -107,8 +112,8 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
     private bool IsCorrectAnswer()
     {
         Debug.Log("REPONSE CORRECTE???");
-        Debug.Log(Globals.correctAnswer);
-        Debug.Log(doorId);
+        Debug.Log("PORTE ATTENDUE:" + Globals.correctAnswer);
+        Debug.Log("PORTE SCANNEE:" + doorId);
         if (Globals.correctAnswer ==  doorId)
             return true;
         else
@@ -117,10 +122,9 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
 
     private void DisplayQuestion(Question newQuestion)
     {
-        questionCanvas.GetComponent<Text>().text = newQuestion.question;
+        Debug.Log("QUESTION A AFFICHER" + newQuestion.question);
+        questionCanvas.GetComponent<Text>().text = newQuestion.question.ToString();
         indiceCanvas.GetComponent<Text>().text = newQuestion.indice;
-        questionCanvas.SetActive(true);
-        indiceCanvas.SetActive(true);
     }
 
 }

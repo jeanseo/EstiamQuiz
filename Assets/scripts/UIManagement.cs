@@ -14,7 +14,7 @@ public class UIManagement : MonoBehaviour
         Debug.Log("C'eST PARTI!!!!!");
         instruction = GameObject.Find("Instructions");
         ChangeInstructions("Veuillez vous rendre au panneau d'entrée");
-        Globals.correctAnswer = "Entrée";
+        
     }
 
     // Update is called once per frame
