@@ -9,5 +9,7 @@ namespace Assets.scripts.classes
     public static class Globals
     {
         public static int currentLevel = 0;
+        public static string correctAnswer;
+        public static string lastDoor = "Entrée";
     }
 }
