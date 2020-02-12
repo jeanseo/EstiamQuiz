@@ -6,8 +6,7 @@ using UnityEngine.UI;
 
 public class ButtonAction : MonoBehaviour
 {
-    public GameObject cube;
-    public bool correctAnswer;
+    public GameObject indiceText;
 
     // Start is called before the first frame update
     void Start()
@@ -24,15 +23,8 @@ public class ButtonAction : MonoBehaviour
 
     void OnClick()
     {
-        //Get the Renderer component from the new cube
-        var cubeRenderer = cube.GetComponent<Renderer>();
-        if (correctAnswer)
-        {
-            cubeRenderer.material.SetColor("_Color", Color.green);
-        }
-        else
-        {
-            cubeRenderer.material.SetColor("_Color", Color.red);
-        }        
+        gameObject.SetActive(false);
+        indiceText.SetActive(true);
+
     }
 }

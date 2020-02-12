@@ -11,14 +11,17 @@ using Assets.scripts;
 public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
 {
     private TrackableBehaviour trackableBehaviour;
-    public GameObject cube;
+    public GameObject canvas;
     public GameObject questionCanvas;
     public GameObject indiceCanvas;
     public GameObject resultCanvas;
+    public GameObject getIndiceButton;
     public String doorId;
     public GameObject ui;
     protected Color answerColor;
     protected bool inFirst = false;
+    protected Question nextQuestion = new Question();
+    protected Parcours parcours;
 
     public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus)
     {
@@ -31,17 +34,17 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
     }
 
     // Start is called before the first frame update
-    async void Start()
+    void Start()
     {
+        //Chargement des questions
+        parcours = new Parcours();
         //Initialisation des textes
-        cube = GameObject.Find("Cube");
-        //questionCanvas = GameObject.Find("Question");
-        //indiceCanvas = GameObject.Find("Indice");
-        //resultCanvas = GameObject.Find("Result");
-        
         resultCanvas.GetComponent<Text>().text = "";
         indiceCanvas.GetComponent<Text>().text = "";
         questionCanvas.GetComponent<Text>().text = "";
+        getIndiceButton.SetActive(false);
+
+        indiceCanvas.SetActive(false);
 
         trackableBehaviour = GetComponent<TrackableBehaviour>();
         if (trackableBehaviour)
@@ -52,91 +55,118 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
     private void onTrackingLost()
     {
         Debug.Log("TRACKING PERDU");
-        Globals.instruction = "Trouve la porte qui correspond à la réponse";
+        Globals.displayUI = true;
+        
+        
     }
 
-    private async void OnTrackingFound()
+    private void OnTrackingFound()
     {
-        Globals.instruction = "";
-        Debug.Log("TRACKING TROUVE");
-        if (IsCorrectAnswer())
+        Globals.displayUI = false;
+        //On efface le texte de la question si la porte n'est plus utilisée
+        if (Globals.lastDoor != doorId)
         {
-            Debug.Log("REPONSE CORRECTE");
-            if(Globals.correctAnswer != "Entrée")
-            {
-                await displayAnswer(true);
-            }
-            
-            Debug.Log(Globals.correctAnswer);
-            Question nextQuestion = new Question();
-            await nextQuestion.GetQuestion(Globals.correctAnswer);
-            Debug.Log("Question récupérée:");
-            Debug.Log(nextQuestion.question);
-            DisplayQuestion(nextQuestion);
-            Globals.lastDoor = doorId;
-            Globals.correctAnswer = nextQuestion.answer;
+            indiceCanvas.GetComponent<Text>().text = "";
+            questionCanvas.GetComponent<Text>().text = "";
         }
+        //On efface les instructions
+        Debug.Log("TRACKING TROUVE");
+        // Si on est sur la porte Entrée
+        if(doorId == Globals.firstDoorID)
+        {
+            // On affiche la question si on est bien au début du formulaire
+            if (parcours.getCurrentQuestion().id == 0)
+            {
+                //On démarre le jeu
+                if (!parcours.IsGameStarted())
+                    parcours.StartGame();
+                //On affiche la question
+                DisplayQuestionText(parcours.getCurrentQuestion());
+                Globals.instruction = "Trouve la porte qui correspond à la réponse";
+
+            }
+        }
+        //On est sur une autre porte
         else
         {
-            Debug.Log("REPONSE FAUSSE");
-            if (Globals.lastDoor != doorId)
-                displayAnswer(false);
+            //On vérifie si le jeu est lancé
+            Debug.Log("JEU LANCE???: " + parcours.IsGameStarted());
+            if (parcours.IsGameStarted())
+            {
+                //On vérifie si la porte correspond à la réponse
+                if (parcours.IsCorrectAnswer(doorId))
+                {
+                    //On indique que la réponse est correcte
+                    parcours.PassToNextQuestion();
+                    Globals.lastDoor = doorId;
+                    //on affiche réponse juste puis la prochaine question
+                    DisplayAnswer(true);
+
+                }
+                else
+                {
+                    if (Globals.lastDoor != doorId)
+                        DisplayAnswer(false);
+                }
+            }
+            
         }
     }
 
-    private async Task displayAnswer(bool correct)
+    private void DisplayAnswer(bool correct)
     {
         if (correct)
         {
-            answerColor = Color.green;
             resultCanvas.GetComponent<Text>().text = "BONNE REPONSE";
-            resultCanvas.GetComponent<Text>().color = answerColor;
-            StartCoroutine("WaitOneSecond");
+            resultCanvas.GetComponent<Text>().color = Color.green;
+            StartCoroutine("DisplayResult");
+            //On affiche également la prochaine question
+            StartCoroutine("DisplayQuestion");
         }
         else
         {
-            answerColor = Color.red;
             resultCanvas.GetComponent<Text>().text = "MAUVAISE REPONSE";
-            resultCanvas.GetComponent<Text>().color = answerColor;
-            StartCoroutine("WaitOneSecond");
+            resultCanvas.GetComponent<Text>().color = Color.red;
+            StartCoroutine("DisplayResult");
         }
+
+
     }
 
     private IEnumerator DisplayResult()
     {
+        //On attend une seconde, puis on affiche pendant 3 secondes
         inFirst = true;
         Debug.Log("REPONSE");
         yield return new WaitForSeconds(1);
         resultCanvas.SetActive(true);
         yield return new WaitForSeconds(3);
+        //On affiche la prochaine question si ce n'est pas la fin du questionnaire
         resultCanvas.SetActive(false);
-        inFirst = false;
+        if (!parcours.IsLastAnswer())
+        {
+            inFirst = false;
+        }
+        else
+        {
+            parcours.Finish();
+        }
     }
 
     private IEnumerator DisplayQuestion()
     {
         while (inFirst)
             yield return new WaitForSeconds(0.1f);
-
+        DisplayQuestionText(parcours.getCurrentQuestion());
 
     }
 
-    private bool IsCorrectAnswer()
-    {
-        Debug.Log("REPONSE CORRECTE???");
-        Debug.Log("PORTE ATTENDUE:" + Globals.correctAnswer);
-        Debug.Log("PORTE SCANNEE:" + doorId);
-        if (Globals.correctAnswer ==  doorId)
-            return true;
-        else
-            return false;
-    }
-
-    private void DisplayQuestion(Question newQuestion)
+    private void DisplayQuestionText(Question newQuestion)
     {
         Debug.Log("QUESTION A AFFICHER" + newQuestion.question);
         questionCanvas.GetComponent<Text>().text = newQuestion.question.ToString();
         indiceCanvas.GetComponent<Text>().text = newQuestion.indice;
+        getIndiceButton.SetActive(true);
     }
 
 }
