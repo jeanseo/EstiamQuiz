@@ -12,10 +12,10 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
 {
     private TrackableBehaviour trackableBehaviour;
     public GameObject canvas;
-    public GameObject questionCanvas;
-    public GameObject indiceCanvas;
-    public GameObject resultCanvas;
-    public GameObject getIndiceButton;
+    protected GameObject questionCanvas;
+    protected GameObject indiceCanvas;
+    protected GameObject resultCanvas;
+    protected GameObject getIndiceButton;
     public String doorId;
     public GameObject ui;
     protected Color answerColor;
@@ -38,7 +38,14 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
     {
         //Chargement des questions
         parcours = new Parcours();
+        //Initialisation des objets
+        resultCanvas = canvas.transform.Find("Result").gameObject;
+        questionCanvas = canvas.transform.Find("Question").gameObject;
+        indiceCanvas = canvas.transform.Find("Indice").gameObject;
+        getIndiceButton = canvas.transform.Find("IndiceAction").gameObject;
+
         //Initialisation des textes
+
         resultCanvas.GetComponent<Text>().text = "";
         indiceCanvas.GetComponent<Text>().text = "";
         questionCanvas.GetComponent<Text>().text = "";
