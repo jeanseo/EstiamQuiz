@@ -15,7 +15,9 @@ namespace Assets.scripts.classes
         public static List<Question> parcours = new List<Question>();
         private static int currentQuestion = 0;
 
-        public static bool _isGameStarted { get; internal set; }
+        protected static bool _isGameStarted;
+
+        protected static int score;
 
         public Parcours()
         {
@@ -31,6 +33,12 @@ namespace Assets.scripts.classes
                 _isGameStarted = false;
             }
             
+        }
+
+        internal void indiceActivated()
+        {
+            parcours[currentQuestion].indiceActivated = true;
+            Debug.Log("un indice a été demandé"+ parcours[currentQuestion].indiceActivated);
         }
 
         public Question getCurrentQuestion()
@@ -73,6 +81,31 @@ namespace Assets.scripts.classes
         public bool IsGameStarted()
         {
             return _isGameStarted;
+        }
+
+        public int getScore()
+        {
+            return score;
+        }
+
+        public void SetScore()
+        {
+            if (!parcours[currentQuestion].indiceActivated)
+                score += Globals.goodAnswerPoints;
+            else
+                score += Globals.indiceAnswerPoints;
+
+            Debug.Log("SCORE:" + score);
+        }
+
+        public void SetPenalty()
+        {
+            if (score > 0)
+                score -= Globals.badAnswerPoints;
+            if (score < 0)
+                score = 0;
+            Debug.Log("SCORE:" + score);
+
         }
     }
     

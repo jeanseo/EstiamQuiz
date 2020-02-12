@@ -13,7 +13,14 @@ namespace Assets.scripts.classes
         public string question { get; set; }
         public string indice { get; set; }
         public string answer { get; set; }
-        
+        public bool indiceActivated { get; set; }
+
+        public Question()
+        {
+            indiceActivated = false;
+        }
     }
+
+    
 
 }

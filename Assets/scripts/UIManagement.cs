@@ -8,20 +8,24 @@ using UnityEngine.UI;
 public class UIManagement : MonoBehaviour
 {
     private GameObject instruction;
+    private GameObject score;
+    private Parcours parcours;
     // Start is called before the first frame update
     void Start()
     {
         instruction = GameObject.Find("Instructions");
+        score = GameObject.Find("Score");
+
+        parcours = new Parcours(); 
     }
 
     // Update is called once per frame
     void Update()
     {
-        ChangeInstructions(Globals.instruction);
-        if (Globals.displayUI)
-            ShowUI();
-        else
-            HideUI();
+        instruction.GetComponent<TextMeshProUGUI>().text = Globals.instruction;
+        score.GetComponent<TextMeshProUGUI>().text = parcours.getScore().ToString()+" PTS";
+        instruction.SetActive(Globals.displayInformation);
+        score.SetActive(Globals.DisplayScore);
         
     }
 
@@ -30,13 +34,4 @@ public class UIManagement : MonoBehaviour
         instruction.GetComponent<TextMeshProUGUI>().text = text;
     }
 
-    public void ShowUI()
-    {
-        instruction.SetActive(true);
-    }
-
-    public void HideUI()
-    {
-        instruction.SetActive(false);
-    }
 }

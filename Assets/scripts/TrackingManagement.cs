@@ -22,6 +22,8 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
     protected bool inFirst = false;
     protected Question nextQuestion = new Question();
     protected Parcours parcours;
+    protected bool indiceUsed;
+    protected List<string> previousBadAnswer = new List<string>();
 
     public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus)
     {
@@ -36,6 +38,7 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
     // Start is called before the first frame update
     void Start()
     {
+        indiceUsed = false;
         //Chargement des questions
         parcours = new Parcours();
         //Initialisation des objets
@@ -62,14 +65,14 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
     private void onTrackingLost()
     {
         Debug.Log("TRACKING PERDU");
-        Globals.displayUI = true;
+        Globals.displayInformation = true;
         
         
     }
 
     private void OnTrackingFound()
     {
-        Globals.displayUI = false;
+        Globals.displayInformation = false;
         //On efface le texte de la question si la porte n'est plus utilisée
         if (Globals.lastDoor != doorId)
         {
@@ -104,16 +107,33 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
                 if (parcours.IsCorrectAnswer(doorId))
                 {
                     //On indique que la réponse est correcte
+                    parcours.SetScore();
                     parcours.PassToNextQuestion();
                     Globals.lastDoor = doorId;
                     //on affiche réponse juste puis la prochaine question
                     DisplayAnswer(true);
+                    //On incrémente le score
 
                 }
                 else
                 {
+                    //On affiche que c'est la mauvaise réponse si ce n'est pas la porte sur laquelle apparait la question en cours
                     if (Globals.lastDoor != doorId)
+                    {
                         DisplayAnswer(false);
+                        //Si on a jamais proposé cette réponse pour cette question
+                        if (!previousBadAnswer.Contains(doorId))
+                        {
+                            //On ajoute cette réponse à la liste des mauvaises réponses
+                            previousBadAnswer.Add(doorId);
+                            //On retire un point
+                            parcours.SetPenalty();
+                        }
+
+
+                    }
+
+
                 }
             }
             
@@ -147,7 +167,7 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
         Debug.Log("REPONSE");
         yield return new WaitForSeconds(1);
         resultCanvas.SetActive(true);
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
         //On affiche la prochaine question si ce n'est pas la fin du questionnaire
         resultCanvas.SetActive(false);
         if (!parcours.IsLastAnswer())

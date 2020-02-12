@@ -13,6 +13,11 @@ namespace Assets.scripts.classes
         public static string lastDoor = "Entrée";
         public static string instruction = "Trouve le panneau Estiam pour commencer";
         public const string firstDoorID = "Entrée";
-        public static bool displayUI = true;
+        public static bool displayInformation = true;
+        public static int goodAnswerPoints = 10;
+        public static int indiceAnswerPoints = 6;
+        public static int badAnswerPoints = 1;
+
+        public static bool DisplayScore = true;
     }
 }
