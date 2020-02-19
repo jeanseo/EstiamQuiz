@@ -112,7 +112,6 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
                     Globals.lastDoor = doorId;
                     //on affiche réponse juste puis la prochaine question
                     DisplayAnswer(true);
-                    //On incrémente le score
 
                 }
                 else
@@ -176,6 +175,7 @@ public class TrackingManagement : MonoBehaviour, ITrackableEventHandler
         }
         else
         {
+            Debug.Log("Fin du questionnaire");
             parcours.Finish();
         }
     }

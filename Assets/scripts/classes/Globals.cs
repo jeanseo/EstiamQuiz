@@ -17,7 +17,10 @@ namespace Assets.scripts.classes
         public static int goodAnswerPoints = 10;
         public static int indiceAnswerPoints = 6;
         public static int badAnswerPoints = 1;
-
-        public static bool DisplayScore = true;
+        public static string ranking = string.Empty;
+        public static bool displayScore = true;
+        public static bool displayRanking = false;
+        public static bool displayForm = false;
+        public static string playerName = string.Empty;
     }
 }

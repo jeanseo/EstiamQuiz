@@ -28,7 +28,8 @@ namespace Assets.scripts.classes
                 string path = Application.streamingAssetsPath + "/parcours.json";
                 string JSONString = File.ReadAllText(path);
                 Debug.Log(JSONString);
-                parcours = JsonConvert.DeserializeObject<List<Question>>(JSONString);
+                DownloadedParcours _parcours = JsonConvert.DeserializeObject<DownloadedParcours>(JSONString);
+                parcours = _parcours.parcours;
                 Debug.Log(parcours.Count);
                 _isGameStarted = false;
             }
@@ -53,7 +54,8 @@ namespace Assets.scripts.classes
 
         public bool IsLastAnswer()
         {
-            return (currentQuestion+1 == parcours.Count);
+            Debug.Log("Question "+ currentQuestion +"/"+parcours.Count);
+            return (currentQuestion == parcours.Count);
         }
 
         public void PassToNextQuestion()
@@ -64,10 +66,65 @@ namespace Assets.scripts.classes
 
         public void Finish()
         {
-            //TODO Calculer le score
-            //TODO Saisir le nom
+            _isGameStarted = false;
+            Globals.displayScore = false;
+            Globals.instruction = "Votre score: "+score;
+            Globals.displayInformation = true;
+
+            //Afficher le score, et la saisie du nom
+            Globals.displayForm = true;
+            
+        }
+
+        public void DisplayRanking()
+        {
             //TODO Afficher le classement
-            Globals.instruction = "GAME OVER!!";
+            // A remplacer par l'appel API: Récupération des 5 premiers
+            try
+            {
+                string path = Application.streamingAssetsPath + "/HighScore.json";
+                string JSONString = File.ReadAllText(path);
+                Debug.Log("RECUPERATION DU CLASSEMENT");
+                Debug.Log(JSONString);
+                List<Score> ranking = JsonConvert.DeserializeObject<List<Score>>(JSONString);
+
+                //Création du texte d'affichage des scores
+
+                Debug.Log(ranking.Count);
+                foreach (Score score in ranking)
+                {
+                    Globals.ranking += score.rank + " " + score.user + " " + score.score + "\n";
+                }
+                Globals.displayRanking = true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
+            
+        }
+
+        public void SendScore()
+        {
+            
+            //Récupérer le nom, et envoyer le nom et le score par l'api
+            Debug.Log(score);
+            if (Globals.playerName == string.Empty)
+                Globals.playerName = "Anonymous";
+            Debug.Log(Globals.playerName);
+
+            DisplayRanking();
+
+        }
+
+        public void displayForm()
+        {
+            Globals.instruction = "Envoies ton score";
+            Globals.displayScore = false;
+            Globals.displayInformation = true;
+            Globals.displayForm = true;
         }
 
         public void StartGame()
@@ -107,6 +164,20 @@ namespace Assets.scripts.classes
             Debug.Log("SCORE:" + score);
 
         }
+        
     }
-    
+
+    class Score
+    {
+        public string user { get; set; }
+        public int score { get; set; }
+        public int rank { get; set; }
+    }
+
+    class DownloadedParcours
+    {
+        public List<Question> parcours { get; set; }
+
+    }
+
 }
