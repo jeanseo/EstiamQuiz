@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id">
+  <string name="firebase_database_url" translatable="false">https://quizestiam.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">448951032457</string>
+  <string name="google_storage_bucket" translatable="false">quizestiam.appspot.com</string>
+  <string name="project_id" translatable="false">quizestiam</string>
+  <string name="google_api_key" translatable="false">AIzaSyBy_dxCBaIwqXt47KKX3d113eIRyEO199w</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBy_dxCBaIwqXt47KKX3d113eIRyEO199w</string>
+  <string name="google_app_id" translatable="false">1:448951032457:android:03396927ec4aa752fc8458</string>
+  <string name="default_web_client_id" translatable="false">448951032457-v01ikan9kt3d0mht6ods930eu8h5q8vn.apps.googleusercontent.com</string>
+</resources>

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "448951032457",
+    "firebase_url": "https://quizestiam.firebaseio.com",
+    "project_id": "quizestiam",
+    "storage_bucket": "quizestiam.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448951032457:android:03396927ec4aa752fc8458",
+        "android_client_info": {
+          "package_name": "com.jeanseo.Estiamquiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "448951032457-v01ikan9kt3d0mht6ods930eu8h5q8vn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBy_dxCBaIwqXt47KKX3d113eIRyEO199w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448951032457-v01ikan9kt3d0mht6ods930eu8h5q8vn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Newtonsoft.Json;
+using SimpleFirebaseUnity;
+using SimpleFirebaseUnity.MiniJSON;
 
 namespace Assets.scripts.classes
 {
@@ -15,22 +17,33 @@ namespace Assets.scripts.classes
         public static List<Question> parcours = new List<Question>();
         private static int currentQuestion = 0;
 
+        protected static bool created = false;
+
         protected static bool _isGameStarted;
 
         protected static int score;
 
+        protected Firebase firebase;
+
+        protected List<Question> questions = new List<Question>();
+        private static int length;
+
         public Parcours()
         {
-            if (parcours.Count == 0)
+            //On vérifie s'il n'y a pas déjà une instance
+            if (!created)
             {
+                created = true;
+                length = Globals.parcoursLength;
                 Debug.Log("Initialisation du parcours");
+                firebase = Firebase.CreateNew("https://quizestiam.firebaseio.com/");
+                getQuestions();
                 // A remplacer par l'appel API
-                string path = Application.streamingAssetsPath + "/parcours.json";
-                string JSONString = File.ReadAllText(path);
-                Debug.Log(JSONString);
-                DownloadedParcours _parcours = JsonConvert.DeserializeObject<DownloadedParcours>(JSONString);
-                parcours = _parcours.parcours;
-                Debug.Log(parcours.Count);
+                //string path = Application.streamingAssetsPath + "/parcours.json";
+                //string JSONString = File.ReadAllText(path);
+                //Debug.Log(JSONString);
+                //DownloadedParcours _parcours = JsonConvert.DeserializeObject<DownloadedParcours>(JSONString);
+                //parcours = _parcours.parcours;
                 _isGameStarted = false;
             }
             
@@ -164,7 +177,81 @@ namespace Assets.scripts.classes
             Debug.Log("SCORE:" + score);
 
         }
-        
+
+        public void getQuestions()
+        {
+            // On se place au niveau de la collection "questions"
+            Firebase questionFirebase = firebase.Child("questions");
+
+            // On ajoute quelques callbacks savoir si tout ce passe bien ou pas.
+            questionFirebase.OnGetSuccess += GetOKHandler;
+            questionFirebase.OnGetFailed += GetFailHandler;
+
+            questionFirebase.GetValue();
+        }
+
+        void GetOKHandler(Firebase sender, DataSnapshot snapshot)
+        {
+            // La requête a fonctionnée et on a les données demandées
+            Debug.Log("[OK] Get from key: " + sender.FullKey);
+            Debug.Log("[OK] Raw Json: " + snapshot.RawJson);
+            var questionList = (Dictionary<string, object>)Json.Deserialize(snapshot.RawJson);
+            var getQuestions = new List<Question>();
+
+            foreach (KeyValuePair<string, object> json in questionList)
+            {
+                var questionItem = (Dictionary<string, object>)json.Value;
+
+                // Venant d'un Json, tout est sous forme de string
+                string _name = questionItem["name"].ToString();
+                string _question = questionItem["question"].ToString();
+                string _indice = questionItem["indice"].ToString();
+                string _answer = questionItem["answer"].ToString();
+
+                // On rassemble le tout dans un même object
+                // La méthode unchecked() étant utilisé pour ignore les dépassements, 
+                //  si un double est trop grand pour le int.
+                // voir https://docs.microsoft.com/fr-fr/dotnet/csharp/language-reference/keywords/unchecked
+                questions.Add(
+                    new Question()
+                    {
+                        name = _name,
+                        question = _question,
+                        indice = _indice,
+                        answer = _answer
+                    });
+            }
+            pickQuestions();
+            Debug.Log("Nombre de questions:" + parcours.Count);
+        }
+
+        private void pickQuestions()
+        {
+            //Si la longueur demandée du questionnaire est supérieure aux nombre de questions disponibles
+            if (length > questions.Count)
+                length = questions.Count;
+            System.Random rnd = new System.Random();
+
+            for (int i = 0; i < length;)
+            {
+                // Onc choisit un index aléatoirement
+                int r = rnd.Next(questions.Count);
+                //Si l'item n'est pas déjà présent, on l'ajoute
+                if (!parcours.Contains(questions[r]))
+                {
+                    parcours.Add(questions[r]);
+                    i++;
+                }
+            }
+        }
+
+        void GetFailHandler(Firebase sender, FirebaseError err)
+        {
+            // S'il y a eut un problème de connexion ou de validation
+            Debug.Log("[ERR] Get from key: " + sender.FullKey + ",  " + err.Message
+                + " (" + (int)err.Status + ")");
+        }
+
     }
 
     class Score
@@ -176,7 +263,8 @@ namespace Assets.scripts.classes
 
     class DownloadedParcours
     {
-        public List<Question> parcours { get; set; }
+        public string id { get; set; }
+        public Question question { get; set; }
 
     }
 

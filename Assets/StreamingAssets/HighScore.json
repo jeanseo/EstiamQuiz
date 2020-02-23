@@ -1,27 +1,29 @@
-﻿[
-  {
-    "rank": 1,
-    "user": "Apu Nahasapeemapetilon",
-    "Score": 98
-  },
-  {
-    "rank": 2,
-    "user": "Barney Gumbles",
-    "Score": 87
-  },
-  {
-    "rank": 3,
-    "user": "Lenny et Karl",
-    "Score": 78
-  },
-  {
-    "rank": 4,
-    "user": "Monty Burns",
-    "Score": 50
-  },
-  {
-    "rank": 5,
-    "user": "Mme Crapabelle",
-    "Score": 34
+﻿{
+  "highscores": {
+    "id1": {
+      "date": 1507904241.37306,
+      "score": 98,
+      "name": "Apu Nahasapeemapetilon"
+    },
+    "id2": {
+      "date": 1492161216.19226,
+      "score": 87,
+      "name": "Barney Gumbles"
+    },
+    "id3": {
+      "date": 1493085711.26346,
+      "score": 78,
+      "name": "Lenny et Karl"
+    },
+    "id4": {
+      "date": 1490340104.77313,
+      "score": 68,
+      "name": "Monty Burns"
+    },
+    "id5": {
+      "date": 1490340104.77313,
+      "score": 34,
+      "name": "Mme Crapabelle"
+    }
   }
-]
+}
