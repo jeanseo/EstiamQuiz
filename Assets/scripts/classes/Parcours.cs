@@ -36,14 +36,8 @@ namespace Assets.scripts.classes
                 created = true;
                 length = Globals.parcoursLength;
                 Debug.Log("Initialisation du parcours");
-                firebase = Firebase.CreateNew("https://quizestiam.firebaseio.com/");
+                firebase = Firebase.CreateNew(Globals.firebaseAddress);
                 getQuestions();
-                // A remplacer par l'appel API
-                //string path = Application.streamingAssetsPath + "/parcours.json";
-                //string JSONString = File.ReadAllText(path);
-                //Debug.Log(JSONString);
-                //DownloadedParcours _parcours = JsonConvert.DeserializeObject<DownloadedParcours>(JSONString);
-                //parcours = _parcours.parcours;
                 _isGameStarted = false;
             }
             
@@ -95,20 +89,10 @@ namespace Assets.scripts.classes
             // A remplacer par l'appel API: Récupération des 5 premiers
             try
             {
-                string path = Application.streamingAssetsPath + "/HighScore.json";
-                string JSONString = File.ReadAllText(path);
                 Debug.Log("RECUPERATION DU CLASSEMENT");
-                Debug.Log(JSONString);
-                List<Score> ranking = JsonConvert.DeserializeObject<List<Score>>(JSONString);
-
-                //Création du texte d'affichage des scores
-
-                Debug.Log(ranking.Count);
-                foreach (Score score in ranking)
-                {
-                    Globals.ranking += score.rank + " " + score.user + " " + score.score + "\n";
-                }
-                Globals.displayRanking = true;
+                Classement classement = new Classement();
+                classement.fetchHighScores(5);
+                
             }
             catch (Exception)
             {
@@ -236,6 +220,7 @@ namespace Assets.scripts.classes
             {
                 // Onc choisit un index aléatoirement
                 int r = rnd.Next(questions.Count);
+                Debug.Log("index choisi:" + r);
                 //Si l'item n'est pas déjà présent, on l'ajoute
                 if (!parcours.Contains(questions[r]))
                 {
@@ -252,13 +237,6 @@ namespace Assets.scripts.classes
                 + " (" + (int)err.Status + ")");
         }
 
-    }
-
-    class Score
-    {
-        public string user { get; set; }
-        public int score { get; set; }
-        public int rank { get; set; }
     }
 
     class DownloadedParcours

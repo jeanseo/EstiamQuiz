@@ -8,8 +8,8 @@
     },
     "B": {
       "name": "Ray Bradbury",
-      "question": "Je suis le concepteur des 3 lois de la robotique",
-      "indice": "J'ai écrit les chroniques martiennes et Farebheit 451",
+      "question": "Je suis un auteur américain de science-fiction",
+      "indice": "J'ai écrit les chroniques martiennes et Farenheit 451",
       "answer": "B"
     },
     "C": {
@@ -132,31 +132,31 @@
       "indice": "J'ai écrit 20 000 lieues sous les mers",
       "answer": "V"
     }
-  },
+  },	
   "highscores": {
     "id1": {
       "date": 1507904241.37306,
-      "score": 98,
+      "points": 98,
       "name": "Apu Nahasapeemapetilon"
     },
     "id2": {
       "date": 1492161216.19226,
-      "score": 87,
+      "points": 87,
       "name": "Barney Gumbles"
     },
     "id3": {
       "date": 1493085711.26346,
-      "score": 78,
+      "points": 78,
       "name": "Lenny et Karl"
     },
     "id4": {
       "date": 1490340104.77313,
-      "score": 68,
+      "points": 68,
       "name": "Monty Burns"
     },
     "id5": {
       "date": 1490340104.77313,
-      "score": 34,
+      "points": 34,
       "name": "Mme Crapabelle"
     }
   }

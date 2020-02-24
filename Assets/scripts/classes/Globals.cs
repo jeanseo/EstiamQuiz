@@ -22,6 +22,8 @@ namespace Assets.scripts.classes
         public static bool displayRanking = false;
         public static bool displayForm = false;
         public static string playerName = string.Empty;
-        internal static int parcoursLength = 5;
+        public static int parcoursLength = 1;
+        public static string firebaseAddress = "https://quizestiam.firebaseio.com/";
+
     }
 }
