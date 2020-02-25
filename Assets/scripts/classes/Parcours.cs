@@ -21,12 +21,12 @@ namespace Assets.scripts.classes
 
         protected static bool _isGameStarted;
 
-        protected static int score;
-
-        protected Firebase firebase;
+        protected static Firebase firebase;
 
         protected List<Question> questions = new List<Question>();
         private static int length;
+
+        public static Score score = new Score();
 
         public Parcours()
         {
@@ -75,7 +75,7 @@ namespace Assets.scripts.classes
         {
             _isGameStarted = false;
             Globals.displayScore = false;
-            Globals.instruction = "Votre score: "+score;
+            Globals.instruction = "Votre score: "+score.points;
             Globals.displayInformation = true;
 
             //Afficher le score, et la saisie du nom
@@ -107,12 +107,12 @@ namespace Assets.scripts.classes
         {
             
             //Récupérer le nom, et envoyer le nom et le score par l'api
-            Debug.Log(score);
+            Debug.Log(score.points);
             if (Globals.playerName == string.Empty)
                 Globals.playerName = "Anonymous";
             Debug.Log(Globals.playerName);
-
-            DisplayRanking();
+            score.name = Globals.playerName;
+            SubmitScore();
 
         }
 
@@ -129,7 +129,6 @@ namespace Assets.scripts.classes
             _isGameStarted = true;
             //Démarrer chrono
             //Afficher chrono
-            //Afficher score
         }
 
         public bool IsGameStarted()
@@ -139,26 +138,26 @@ namespace Assets.scripts.classes
 
         public int getScore()
         {
-            return score;
+            return score.points;
         }
 
         public void SetScore()
         {
             if (!parcours[currentQuestion].indiceActivated)
-                score += Globals.goodAnswerPoints;
+                score.points += Globals.goodAnswerPoints;
             else
-                score += Globals.indiceAnswerPoints;
+                score.points += Globals.indiceAnswerPoints;
 
-            Debug.Log("SCORE:" + score);
+            Debug.Log("SCORE:" + score.points);
         }
 
         public void SetPenalty()
         {
-            if (score > 0)
-                score -= Globals.badAnswerPoints;
-            if (score < 0)
-                score = 0;
-            Debug.Log("SCORE:" + score);
+            if (score.points > 0)
+                score.points -= Globals.badAnswerPoints;
+            if (score.points < 0)
+                score.points = 0;
+            Debug.Log("SCORE:" + score.points);
 
         }
 
@@ -234,6 +233,47 @@ namespace Assets.scripts.classes
         {
             // S'il y a eut un problème de connexion ou de validation
             Debug.Log("[ERR] Get from key: " + sender.FullKey + ",  " + err.Message
+                + " (" + (int)err.Status + ")");
+        }
+
+        public void SubmitScore()
+        {
+
+            Debug.Log("coucou");
+            // Pour convertir un double en forçant le point et non la virgule vous 
+            //  pouvez utiliser double.ToString("F1")
+            string jsonToSend = string.Format(
+                "{{ \"name\": \"{0}\", \"points\": {1} }}",
+                score.name, score.points);
+
+            // On se place au niveau de la collection "highscores" qui sera créé 
+            //  si elle n'existe pas
+            Firebase scoresFirebase = firebase.Child("highscores");
+
+            // On ajoute quelques callbacks savoir si tout ce passe bien ou pas.
+            // Il est possible de mettre les callback sur le parent "firebase" mais 
+            //  il aurait fallut demander à ce que la collection enfant hérite des 
+            //  callbacks via firebase.Child("highscores", true);
+            scoresFirebase.OnPushSuccess += PushOKHandler;
+            scoresFirebase.OnPushFailed += PushFailHandler;
+
+            // Enfin on push le tout, en spéficiant qu'on passe un json
+            // Push(string json, bool isJson, string param = "")
+            scoresFirebase.Push(jsonToSend, true);
+        }
+
+        void PushOKHandler(Firebase sender, DataSnapshot snapshot)
+        {
+            // Dans le cas où la requête a fonctionné
+            Debug.Log("[OK] Push from key: " + sender.FullKey);
+            DisplayRanking();
+
+        }
+
+        void PushFailHandler(Firebase sender, FirebaseError err)
+        {
+            // S'il y a eut un problème de connexion ou de validation
+            Debug.Log("[ERR] Push from key: " + sender.FullKey + ", " + err.Message
                 + " (" + (int)err.Status + ")");
         }
 

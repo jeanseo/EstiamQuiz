@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.scripts.classes
 {
-    class Score
+    public class Score
     {
         public string name { get; set; }
         public int points { get; set; }

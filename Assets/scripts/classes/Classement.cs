@@ -15,7 +15,7 @@ namespace Assets.scripts.classes
     {
         protected int length;
         protected Firebase firebase;
-        public List<Score> scores { get; set; }
+        public List<Score> allScores { get; set; }
 
         public void fetchHighScores(int length)
         {
@@ -33,8 +33,8 @@ namespace Assets.scripts.classes
 
             // On récupère tous les highscores, 
             // On trie par "level" mais on pourrait ne pas le faire étant spécifié dans les règles, 
-            //  puis on recupère que les 10 derniers étant la seule manière de faire un trie décroisant.
-            scoresFirebase.GetValue(FirebaseParam.Empty.OrderByChild("score").LimitToLast(length));
+            //  puis on recupère que les 10 derniers étant la seule manière de faire un tri décroisant.
+            scoresFirebase.GetValue(FirebaseParam.Empty.OrderByChild("points").LimitToLast(5));
 
 
         }
@@ -44,7 +44,7 @@ namespace Assets.scripts.classes
           
             var scorelist = (Dictionary<string, object>)Json.Deserialize(snapshot.RawJson);
             Debug.Log(snapshot.RawJson);
-            scores = new List<Score>();
+            allScores = new List<Score>();
 
             foreach (KeyValuePair<string, object> json in scorelist)
             {
@@ -58,18 +58,18 @@ namespace Assets.scripts.classes
                 
 
                 // On rassemble le tout dans un même object
-                scores.Add(
+                allScores.Add(
                     new Score()
                     {
                         points = unchecked((int)points),
                         name = name
                     });
             }
-            Debug.Log(JsonConvert.SerializeObject(scores));
+            List<Score> highscores = allScores.OrderByDescending(o => o.points).ToList();
+            Debug.Log(JsonConvert.SerializeObject(highscores));
             //Création du texte d'affichage des scores
             int i = 1;
-            Debug.Log(scores.Count);
-            foreach (Score score in scores)
+            foreach (Score score in highscores.Take(5))
             {
                 Globals.ranking += i + " " + score.name + " " + score.points + "\n";
                 i++;
